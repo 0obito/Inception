@@ -1,0 +1,33 @@
+name: inception
+
+services:
+  mariadb:
+    build:
+      context: ./requirements/mariadb
+      dockerfile: Dockerfile
+    container_name: mariadb
+    env_file:
+      - .env
+    networks:
+      - inception_network
+    volumes:
+      - database_vol:/var/lib/mysql
+    restart: always
+
+networks:
+  inception_network:
+    driver: bridge
+
+volumes:
+  files_vol:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/aelmsafe/data/wordpress
+  database_vol:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/aelmsafe/data/mariadb
