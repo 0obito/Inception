@@ -1,13 +1,17 @@
 FROM debian:bookworm
 
-RUN apt-get update -y && apt-get install mariadb-server -y
+RUN apt-get update &&  apt-get install mariadb-server -y  && sudo rm -rf /var/lib/apt/lists/*
 
-RUN sed -i "s/127.0.0.1/0.0.0.0/g" /etc/mysql/mariadb.conf.d/50-server.cnf
+RUN mkdir -p /var/run/mysqld && chown -R mysql:mysql /var/run/mysqld && chmod 755 /var/run/mysqld
 
-COPY ./tools/mariadb_script.sh /usr/local/bin/
+COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/
 
-RUN chmod +x /usr/local/bin/mariadb_script.sh
+COPY tools/script_db.sh /usr/local/bin/
+
+RUN chmod +x /usr/local/bin/script_db.sh
+
+ENV MYSQL_ROOT_PASSWORD=root MYSQL_DATABASE=app_db MYSQL_USER=app_user MYSQL_PASSWORD=app_pass
 
 EXPOSE 3306
 
-ENTRYPOINT ["/usr/local/bin/mariadb_script.sh"]
+ENTRYPOINT ["script_db.sh"]
