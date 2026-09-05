@@ -1,33 +1,58 @@
-name: inception
+# is this subject based?
+version: '3.8'
 
 services:
   mariadb:
-    build:
-      context: ./requirements/mariadb
-      dockerfile: Dockerfile
+    build: ./requirements/mariadb
     container_name: mariadb
+    restart: always
     env_file:
       - .env
     networks:
-      - inception_network
+      - inception_net
     volumes:
-      - database_vol:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql
+
+  wordpress:
+    build: ./requirements/wordpress
+    container_name: wordpress
     restart: always
+    env_file:
+      - .env
+    depends_on:
+      - mariadb
+    networks:
+      - inception_net
+    volumes:
+      - wordpress_data:/var/www/html
+
+  nginx:
+    build: ./requirements/nginx
+    container_name: nginx
+    restart: always
+    ports:
+      - "443:443"
+    depends_on:
+      - wordpress
+    networks:
+      - inception_net
+    volumes:
+      - wordpress_data:/var/www/html
 
 networks:
-  inception_network:
+  inception_net:
     driver: bridge
 
 volumes:
-  files_vol:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/aelmsafe/data/wordpress
-  database_vol:
+  mariadb_data:
     driver: local
     driver_opts:
       type: none
       o: bind
       device: /home/aelmsafe/data/mariadb
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/aelmsafe/data/wordpress

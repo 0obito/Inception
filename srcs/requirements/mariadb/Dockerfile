@@ -10,8 +10,6 @@ COPY tools/script_db.sh /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/script_db.sh
 
-ENV MYSQL_ROOT_PASSWORD=root MYSQL_DATABASE=app_db MYSQL_USER=app_user MYSQL_PASSWORD=app_pass
-
 EXPOSE 3306
 
 ENTRYPOINT ["script_db.sh"]
