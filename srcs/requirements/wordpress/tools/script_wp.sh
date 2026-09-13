@@ -1,7 +1,11 @@
 #!/bin/bash
+
 set -eu
 
 WPDIR="/var/www/html"
+
+source /run/secrets/wp_passwords
+source /run/secrets/db_password
 
 # ensure the PHP run dir exists for the PID file
 mkdir -p /run/php

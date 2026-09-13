@@ -1,7 +1,9 @@
 #!/bin/bash
 
-#set -eu
-set -e
+set -eu
+
+source /run/secrets/db_password
+source /run/secrets/db_root_password
 
 DATADIR="/var/lib/mysql"
 

@@ -6,6 +6,9 @@ services:
     restart: always
     env_file:
       - .env
+    secrets:
+      - db_password
+      - db_root_password
     networks:
       - inception_net
     volumes:
@@ -20,6 +23,9 @@ services:
       - .env
     depends_on:
       - mariadb
+    secrets:
+      - wp_passwords
+      - db_password
     networks:
       - inception_net
     volumes:
@@ -42,6 +48,14 @@ services:
 networks:
   inception_net:
     driver: bridge
+
+secrets:
+   db_password:
+     file: ../secrets/db_password.txt
+   db_root_password:
+     file: ../secrets/db_root_password.txt
+   wp_passwords:
+     file: ../secrets/credentials.txt
 
 volumes:
   mariadb_data:
